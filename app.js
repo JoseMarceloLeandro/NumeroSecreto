@@ -1,73 +1,45 @@
-let listaDeNumerosSorteados = [];
-let numeroLimite = 10;
-let numeroSecreto = gerarNumeroAleatorio();
-let tentativas = 1;
+/*
+Autor...: José Marcelo Leandro Junior
+Data....: 16/03/2024
+Objetivo: Resolvendo desafio de Logica da Alura, criando um sorteador de numero aleatorios.
+*/
 
-function exibirTextoNaTela(tag, texto) {
-    let campo = document.querySelector(tag);
-    campo.innerHTML = texto;
-    responsiveVoice.speak(texto, 'Brazilian Portuguese Female', {rate:1.2});
-}
+// Sortear numeros aleatorios, colocalos dentro de uma lista(array), mostrar na tela a lista de numero,
+//desabilitar o botão sortear e habilitar o botao reiniciar.
+function sortear(){
+    let lista = [];
+    let quantidade = parseInt(document.getElementById('quantidade').value);
+    let de = parseInt(document.getElementById('de').value);
+    let ate = parseInt(document.getElementById('ate').value);
+    let escreveNumeroSorteado = document.getElementById('txtNumeroSorteado');
+    let btnReiniciar = document.getElementById('btn-reiniciar');
+    let btnSortear = document.getElementById('btn-sortear');
 
-function exibirMensagemInicial() {
-    exibirTextoNaTela('h1', 'Jogo do número secreto');
-    exibirTextoNaTela('p', 'Escolha um número entre 1 e 10');
-}
-
-exibirMensagemInicial();
-
-function verificarChute() {
-    let chute = document.querySelector('input').value;
+    const minCeiled = Math.ceil(de);
+    const maxFloored = Math.floor(ate);
     
-    if (chute == numeroSecreto) {
-        exibirTextoNaTela('h1', 'Acertou!');
-        let palavraTentativa = tentativas > 1 ? 'tentativas' : 'tentativa';
-        let mensagemTentativas = `Você descobriu o número secreto com ${tentativas} ${palavraTentativa}!`;
-        exibirTextoNaTela('p', mensagemTentativas);
-        document.getElementById('reiniciar').removeAttribute('disabled');
-    } else {
-        if (chute > numeroSecreto) {
-            exibirTextoNaTela('p', 'O número secreto é menor');
-        } else {
-            exibirTextoNaTela('p', 'O número secreto é maior');
-        }
-        tentativas++;
-        limparCampo();
+    for(i = 0;i < quantidade; i++ ){
+        let numeroSorteado = Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+        if(lista.includes(numeroSorteado)){
+            i--
+            continue 
+        }else{
+            lista.push(numeroSorteado);
+        } 
     }
-}
+    escreveNumeroSorteado.innerHTML = `Números sorteados: ${lista}.`
+    btnReiniciar.classList.replace('container__botao-desabilitado', 'container__botao');
+    btnSortear.classList.replace('container__botao', 'container__botao-desabilitado');
+}   
 
-function gerarNumeroAleatorio() {
-    let numeroEscolhido = parseInt(Math.random() * numeroLimite + 1);
-    let quantidadeDeElementosNaLista = listaDeNumerosSorteados.length;
-
-    if (quantidadeDeElementosNaLista == numeroLimite) {
-        listaDeNumerosSorteados = [];
-    }
-    if (listaDeNumerosSorteados.includes(numeroEscolhido)) {
-        return gerarNumeroAleatorio();
-    } else {
-        listaDeNumerosSorteados.push(numeroEscolhido);
-        console.log(listaDeNumerosSorteados)
-        return numeroEscolhido;
-    }
-}
-
-function limparCampo() {
-    chute = document.querySelector('input');
-    chute.value = '';
-}
-
-function reiniciarJogo() {
-    numeroSecreto = gerarNumeroAleatorio();
-    limparCampo();
-    tentativas = 1;
-    exibirMensagemInicial();
-    document.getElementById('reiniciar').setAttribute('disabled', true)
-}
-
-
-
-
-
-
-
+// Limpar os valores da lista, bem como os valores dentro dos inputs e voltar o testo de nunhum número sorteado,
+//habilitar o botão Sortear e desabilitar o botao Reiniciar.
+function reiniciar() {
+    let lista = []
+    document.getElementById('quantidade').value = '';
+    document.getElementById('de').value = '';
+    document.getElementById('ate').value = '';
+    document.getElementById('btn-reiniciar').classList.replace('container__botao', 'container__botao-desabilitado');
+    document.getElementById('btn-sortear').classList.replace('container__botao-desabilitado', 'container__botao');
+    document.getElementById('txtNumeroSorteado').innerHTML = 'Números sorteados: nenhum até agora'
+}    
